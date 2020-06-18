@@ -1,0 +1,33 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://133.64.171.125:8914/pntdb?autoReconnect=true&useUnicode=true&generateSimpleParameterMetadata=true
+    username: pntuser
+    password: "xGm5p*Zq"
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+     com.tydic.dateSourceTest: info
+  
+    
+
+dca: 
+  ip: 133.64.171.96
+  port: 2201
+  slaveIp: 133.64.171.96
+  slavePort: 2201
+  acctID: tydic
+  userName: admin
+  passWord: 123456
+  processName: java_test
+  pid: 10001
+  flag: PLCA
+  reconnectCount: 3
+  dcasConnTimeOut: 10000
+  dcasSoTimeOut: 30
+  dcasAgainNumber: 3

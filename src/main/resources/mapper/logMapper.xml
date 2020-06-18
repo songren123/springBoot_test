@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tydic.mapper.commonMapper">
+    <!-- 插入日志记录表-->
+	<select id="qryAllKeyID" resultType="java.util.Map">
+	    select 
+	         prod_inst_id  ,
+	         CONCAT("PLCA.ENHANCE_PROD_INST_ATTR_18:",prod_inst_id,"|919") key_id 
+	     from prod_inst_attr where attr_id =18  
+	     and latn_id =919 and attr_value is null limit 1000000
+	</select>
+	
+	
+	 <select id="qryKeyvalue" resultType="String" parameterType="String">
+	    	 select CONCAT(PAYMENT_MODE_CD,"^18") key_value 
+	    	  from prod_inst where prod_inst_id =#{prodInstId}
+
+	</select>
+	
+	
+	<select id="qryDataList" resultType="java.util.Map" parameterType="java.util.Map">
+	    	SELECT
+				 /* ["sqlId":"PLCA.ENHANCE_4G","appName":"DCA","Mode":"SC"] */
+				 CONCAT(
+				  'PLCA.ENHANCE_4G:',
+				  ACC_PROD_INST_ID,
+				  '|' ,919
+				 )  key_id,
+				 concat(
+				  IFNULL(prod_inst_id,''),
+				  '^',
+				  IFNULL(PROD_INST_NAME,''),
+				    '^',
+				  IFNULL(prod_id,''),
+				    '^',
+				  IFNULL(ACC_PROD_INST_ID,''),
+				    '^',
+				  IFNULL(STATUS_CD,'')
+				 )  key_value
+				FROM
+				 prod_inst_sub
+				 where prod_id =41020202
+				  and LATN_ID=919
+				  and ACC_PROD_INST_ID =200295039071
+				  
+
+	</select>
+	
+	
+	
+	<select id="qryDataList2" resultType="java.util.Map" parameterType="java.util.Map">
+				SELECT
+				/* ["sqlId":"PLCA.ENHANCE_CREDIT_DEGREE","appName":"DCA","Mode":"SC"] */
+				CONCAT(
+					'PLCA.ENHANCE_CREDIT_DEGREE:',
+					 a.OBJ_ID,
+					'|',919
+				) key_id ,a.OBJ_ID obj_id,a.CREDIT_LIMIT_ID,
+				concat(
+					IFNULL(a.obj_id, ''),'^',
+					919,'^',
+			    IFNULL(b.CREDIT_LIMIT_FEE, ''),'^',
+			    IFNULL(b.EFF_DATE, ''),'^',
+			    IFNULL(b.EXP_DATE, ''),'^',    
+			    IFNULL(a.CREDIT_LIMIT_FEE, ''),'^',
+			    IFNULL(a.EFF_DATE, ''),'^',
+			    IFNULL(a.EXP_DATE, ''),'^',
+			    IFNULL(999, ''),'^',
+					IFNULL(999, '')
+				) key_value
+			FROM
+			 TEMPORARY_CREDIT_LIMIT b left join CREDIT_LIMIT a
+			on a.CREDIT_LIMIT_ID=b.CREDIT_LIMIT_ID where a.latn_id like concat(919,'%')
+     </select>	
+	
+     <select id="qryDataList3" resultType="java.util.Map" parameterType="java.util.Map">
+				SELECT
+				CONCAT(
+					'PLCA.PNT_PROD_INST_',
+					 919,
+					'_',a.PROD_INST_ID
+				) key_id			 	
+			FROM
+				prod_inst a where a.latn_id =919
+			LIMIT 110000000 
+     </select>	
+	 
+	 <select id="qryDataList4" resultType="java.util.Map" parameterType="java.util.Map">
+	 SELECT
+			CONCAT(
+				'PLCA.PNT_PROD_INST_',
+				'_',a.OBJ_ID,
+		    '_',a.CUST_ID
+			)key_id
+		FROM
+	OFFER_PROD_INST_REL a where a.latn_id=919 AND a.rela_obj_inst_type='A1' and a.offer_type='11'
+		LIMIT 110000000
+	 </select>
+	 
+	 <select id="qryDataList5" resultType="java.util.Map" parameterType="java.util.Map">
+				SELECT
+				/* ["sqlId":"PLCA.ENHANCE_CREDIT_DEGREE","appName":"DCA","Mode":"SC"] */
+				CONCAT(
+					'PLCA.ENHANCE_CREDIT_DEGREE:',
+					 a.OBJ_ID,
+					'|',290
+				) key_id ,a.OBJ_ID obj_id,a.CREDIT_LIMIT_ID,
+				concat(
+					IFNULL(a.obj_id, ''),'^',
+					290,'^',
+			    IFNULL(b.CREDIT_LIMIT_FEE, ''),'^',
+			    IFNULL(b.EFF_DATE, ''),'^',
+			    IFNULL(b.EXP_DATE, ''),'^',    
+			    IFNULL(a.CREDIT_LIMIT_FEE, ''),'^',
+			    IFNULL(a.EFF_DATE, ''),'^',
+			    IFNULL(a.EXP_DATE, ''),'^',
+			    IFNULL(999, ''),'^',
+					IFNULL(999, '')
+				) key_value
+			FROM
+			 TEMPORARY_CREDIT_LIMIT b left join CREDIT_LIMIT a
+			on a.CREDIT_LIMIT_ID=b.CREDIT_LIMIT_ID where a.latn_id like concat(290,'%')
+     </select>
+     
+	 <select id="qryDataList6" resultType="java.util.Map" parameterType="java.util.Map">
+	      select dca_key key_id,substring_index(dca_value,'^',1) obj_id,dca_value key_value,latn_id from credit_dca_log where create_time >=DATE_FORMAT(NOW(), '%Y-%m-%d') LIMIT 100000
+	 </select>
+	 
+	 <select id="qryDataList7" resultType="java.util.Map" parameterType="java.util.Map">
+	      SELECT * FROM credit_log WHERE create_Staff IN (935784837,930206813,930106050) AND crd_log_status = 0 AND syn_flag = 0  order by create_date asc limit 30000
+	 </select>
+	 
+	 <update id="qryDataList8"  parameterType="java.util.Map">
+	      update credit_log set crd_log_status=0 where obj_id=#{obj_id} and crd_log_status=1
+	 </update>
+	 
+	 <update id="qryDataList9" parameterType="java.util.Map">
+	      update credit_log set crd_log_status=1 where crd_log_id=#{crd_log_id} and obj_id=#{obj_id} and crd_log_status=0
+	 </update>
+	 
+	 <update id="qryDataList10" parameterType="java.util.Map">
+	      update credit_adjust set syn_flag = 0,is_sms=#{is_sms},eff_date=#{eff_date},exp_date=#{exp_date},crd_value=#{crd_value},crd_level=#{crd_level},mod_reason=#{mod_reason} where obj_id=#{obj_id} and crd_status in (1,8,9)
+	 </update>
+	 
+	 <update id="qryDataList11" parameterType="java.util.Map">
+	      update credit_limit set eff_date=#{eff_date},exp_date=#{exp_date},CREDIT_LIMIT_FEE=#{crd_value},AVAILABLE_CREDIT_LIMIT_FEE=#{crd_value},EVALUATE_TIME=#{eff_date} where obj_id=#{obj_id}
+	 </update>
+	 
+	 <update id="qryDataList12" parameterType="java.util.Map">
+	      update credit set eff_date=#{eff_date},exp_date=#{exp_date},credit_level=#{crd_level},EVALUATE_TIME=#{eff_date} where obj_id=#{obj_id}
+	 </update>
+	 
+	 <select id="qryDataList_p1" resultType="java.util.Map" parameterType="java.util.Map">
+	      select * from TMP_XYD_EXC_DATA where prod_id in (42020100,42010100,41010300,23050100) and latn_id='916' limit 2000000
+	 </select>
+	 
+	  <select id="qryDataList_p2" resultType="java.util.Map" parameterType="java.util.Map">
+	      select CONCAT(#{latn_id},MOD(#{prod_inst_id},9)+1) latn_id_new
+	 </select> 
+	 
+	 <select id="qryDataList_p3" resultType="java.util.Map" parameterType="java.util.Map">
+	      select * from credit where obj_id=#{prod_inst_id} and latn_id=#{latn_id_new}
+	 </select>
+	 
+	 <insert id="inDataList_p2" parameterType="java.util.Map">
+	      INSERT INTO credit (
+				CREDIT_ID,
+				create_date,
+				create_staff,
+				credit_level,
+				credit_value,
+				eff_date,
+				evaluate_time,
+				evaluate_type,
+				exp_date,
+				OBJ_ID,
+				obj_type,
+				remark,
+				status_cd,
+				status_date,
+				update_date,
+				UPDATE_STAFF,
+				latn_id
+			)
+			VALUES
+				(
+					seq_credit.nextval,
+					now(),
+					NULL,
+					100100,
+					'0',
+					DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+					DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+					'1100',
+					DATE_FORMAT('2020-07-15 00:00:00','%Y-%m-%d %H:%i:%s'), 
+					#{prod_inst_id},
+					'1300',
+					NULL,
+					'1000',
+					DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+					DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+					NULL,
+					#{latn_id_new}
+				)
+	 </insert>
+	 
+	 <insert id="inDataList_p3" parameterType="java.util.Map">
+			INSERT INTO credit_limit (
+				CREDIT_LIMIT_ID,
+				obj_id,
+				OBJ_TYPE,
+				CREDIT_LIMIT_FEE,
+				AVAILABLE_CREDIT_LIMIT_FEE,
+				EVALUATE_TIME,
+				EVALUATE_TYPE,
+				EXP_DATE,
+				EFF_DATE,
+				SET_REASON,
+				REMARK,
+				STATUS_CD,
+				STATUS_DATE,
+				UPDATE_DATE,
+				UPDATE_STAFF,
+				CREATE_DATE,
+				CREATE_STAFF,
+				latn_id
+			)
+			VALUES
+				(
+					seq_credit_limit.nextval,
+					#{prod_inst_id},
+					'1300',
+					'0',
+					'0',
+					DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+					'1100',
+					DATE_FORMAT('2020-07-15 00:00:00','%Y-%m-%d %H:%i:%s'),
+					DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+					NULL,
+					NULL,
+					'1000',
+					NULL,
+					NULL,
+					NULL,
+					NULL,
+					NULL,
+					#{latn_id_new}
+				)
+	 </insert>
+	 
+	 <insert id="inDataList_p4" parameterType="java.util.Map">
+		INSERT INTO credit_adjust (
+			id,
+			crd_status,
+			obj_id,
+			obj_type,
+			crd_value,
+			crd_level,
+			crd_type,
+			eff_date,
+			exp_date,
+			syn_flag,
+			is_sms,
+			mod_reason,
+			create_date,
+			create_Staff,
+			latn_id,
+			cust_name,
+			service_nbr,
+			product_id,
+			isSuccess,
+			remark
+		)
+		VALUES
+			(
+				seq_credit_adjust.nextval,
+				'1',
+				#{prod_inst_id},
+				'1300',
+				'0',
+				100100,
+				'1',
+				DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+				DATE_FORMAT('2020-07-15 00:00:00','%Y-%m-%d %H:%i:%s'),
+				'1',
+				'0',
+				'初始信用度计算',
+				DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+				null,
+				#{latn_id_new},
+				#{cust_name},
+				#{acc_num},
+				#{prod_id},
+				NULL,
+				NULL
+			)
+     </insert>
+	 
+	 <insert id="inDataList_p5" parameterType="java.util.Map">
+		INSERT INTO credit_log (
+				crd_log_id,
+				crd_log_status,
+				obj_id,
+				obj_type,
+				crd_value,
+				crd_level,
+				crd_type,
+				eff_date,
+				exp_date,
+				syn_flag,
+				is_sms,
+				mod_reason,
+				create_date,
+				create_Staff,
+				latn_id,
+				cust_name,
+				service_nbr,
+				product_id,
+				remark
+			)
+			VALUES
+				(
+					seq_credit_log.nextval,
+					'1',
+					#{prod_inst_id},
+					'1300',
+					'0',
+					100100,
+					'1',
+					DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+					DATE_FORMAT('2020-07-15 00:00:00','%Y-%m-%d %H:%i:%s'),
+					'1',
+					'0',
+					'初始信用度计算',
+					DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s'),
+					NULL,
+					#{latn_id_new},
+					#{cust_name},
+					#{acc_num},
+					#{prod_id},
+					NULL
+				)     
+	 </insert>
+	 
+	 
+	 <select id="qryDataList7a" resultType="java.util.Map" parameterType="java.util.Map">
+	      SELECT * FROM credit_log WHERE create_Staff IN (930206813) AND crd_log_status = -2 order by create_date asc limit 30000
+	 </select>
+	 
+	 <update id="qryDataList8a"  parameterType="java.util.Map">
+	      update credit_log set crd_log_status=0 where obj_id=#{obj_id} and crd_log_status=1
+	 </update>
+	 
+	 <update id="qryDataList9a" parameterType="java.util.Map">
+	      update credit_log set crd_log_status=1 where crd_log_id=#{crd_log_id} and obj_id=#{obj_id} and crd_log_status=-2
+	 </update>
+	 
+	 <update id="qryDataList10a" parameterType="java.util.Map">
+	      update credit_adjust set crd_status=1 where obj_id=#{obj_id} and crd_status = -2
+	 </update>
+	 
+	 <delete id="qryDataList10b" parameterType="java.util.Map">
+	      delete from  credit_adjust where obj_id=#{obj_id} and crd_status = 0
+	 </delete>
+	 
+	 <update id="qryDataList11a" parameterType="java.util.Map">
+	      update credit_limit set eff_date=#{eff_date},exp_date=#{exp_date},CREDIT_LIMIT_FEE=#{crd_value},AVAILABLE_CREDIT_LIMIT_FEE=#{crd_value},EVALUATE_TIME=#{eff_date} where obj_id=#{obj_id}
+	 </update>
+	 
+	 <update id="qryDataList12a" parameterType="java.util.Map">
+	      update credit set eff_date=#{eff_date},exp_date=#{exp_date},EVALUATE_TIME=#{eff_date} where obj_id=#{obj_id}
+	 </update>
+	 
+	 
+</mapper>
